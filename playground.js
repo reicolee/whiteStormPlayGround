@@ -1,20 +1,15 @@
+
 const world = new WHS.World({
   stats: "fps", // fps, ms, mb or false if not need.
-  autoresize: {
-    delay: 1
-  },
 
   gravity: { // Physic gravity.
       x: 0,
-      y: -100,
+      y: 0,
       z: 0
   },
 
   camera: {
-    position: {
-      y: 10,
-      z: 30
-    }
+    position: [0,30,100]
   },
 
   rendering: {
@@ -46,36 +41,15 @@ const sphere = new WHS.Sphere({ // Create sphere comonent.
 
   position: {
     x: 0,
-    y: 100,
+    y: 5,
     z: 0
   }
 });
 
-
-const plane = new WHS.Box({
+const plane = new WHS.Plane({
   geometry: {
-    width: 200,
-    height: 200
-  },
-
-  mass: 0,
-
-  material: {
-    color: 0x447F8B,
-    kind: 'phong'
-  },
-
-  rotation: {
-    x: - Math.PI / 2
-  },
-
-  position:[0,0,0]
-});
-
-const movingPlane = new WHS.Plane({
-  geometry: {
-    width: 200,
-    height: 200
+    width: 100,
+    height: 100
   },
 
   mass: 0,
@@ -91,85 +65,6 @@ const movingPlane = new WHS.Plane({
 });
 
 
-const plane2 = new WHS.Box({
-  geometry: {
-    width: 200,
-    height: 200
-  },
-
-  mass: 0,
-
-  material: {
-    color: 0x447F8B,
-    kind: 'phong'
-  },
-
-  rotation: {
-    y: - Math.PI / 2
-  },
-
-  position: [100,100,0]
-});
-
-const plane3 = new WHS.Box({
-  geometry: {
-    width: 200,
-    height: 200
-  },
-
-  mass: 0,
-
-  material: {
-    color: 0x447F8B,
-    kind: 'phong'
-  },
-
-  rotation: {
-    z: -Math.PI / 2
-  },
-
-  position: [0,100,100]
-});
-
-const plane4 = new WHS.Box({
-  geometry: {
-    width: 200,
-    height: 200
-  },
-
-  mass: 0,
-
-  material: {
-    color: 0x447F8B,
-    kind: 'phong'
-  },
-
-  rotation: {
-    x: -Math.PI / 2
-  },
-
-  position: [0, 200, 0]
-});
-
-const plane5 = new WHS.Box({
-  geometry: {
-    width: 200,
-    height: 200
-  },
-
-  mass: 0,
-
-  material: {
-    color: 0x447F8B,
-    kind: 'phong'
-  },
-
-  rotation: {
-    y: - Math.PI / 2
-  },
-
-  position: [-100,100,0]
-});
 
 new WHS.PointLight({
   light: {
@@ -192,18 +87,174 @@ new WHS.AmbientLight({
   }
 }).addTo(world);
 
-sphere.addTo(world);
-plane.addTo(world);
-movingPlane.addTo(world);
-plane2.addTo(world);
-plane3.addTo(world);
-plane4.addTo(world);
-plane5.addTo(world);
+sphere.addTo(world)
+// sphere.setLinearVelocity({x: 10, y: 0, z: 0});
+.then((sphere) => {
+  const mx = 0,
+    mz = 10;
+//   // sphere.setAngularVelocity({x: mx, y: 0, z: mz});
+  sphere.setLinearVelocity({x: mx, y: 0, z: mz});
+});
 
+
+
+// const mouse = new WHS.VirtualMouse(world);
+// mouse.track(sphere);
+
+// mouse.on('move', () => {
+//   sphere.setLinearVelocity(mouse.project().sub(sphere.position));
+// });
+
+let line;
+let previousPosition;
+setInterval(timerCall, 300)
+
+// var geometry = new THREE.Geometry();
+// var material = new THREE.LineBasicMaterial({color: 0x0000ff});
+
+
+// function newLine(){
+
+//   let previousPosition = [sphere._native.position._x, sphere._native.position._y, sphere._native.position._z];
+
+//   // new THREE.Vector3(
+//   // geometry.vertices.push(previousPosition[0], previousPosition[1], previousPosition[2] ))
+//   // geometry.vertices.push(new THREE.Vector3(sphere._native.position._x, sphere._native.position._y, sphere._native.position._z))
+//   // var line = new THREE.Line(geometry, material);
+//   // line.addTo(world);
+
+//   line = new WHS.Line({
+//   geometry: {
+//     curve: new THREE.LineCurve3(new THREE.Vector3(previousPosition[0], previousPosition[1], previousPosition[2]), new THREE.Vector3(sphere._native.position._x, sphere._native.position._y, sphere._native.position._z))
+//   },
+//   softbody: true
+// });
+//   previousPosition = [sphere._native.position._x, sphere._native.position._y, sphere._native.position._z];
+// }
+
+function timerCall() {
+
+    if (!previousPosition) {
+
+      line = new WHS.Line({
+                geometry: {
+                    curve: new THREE.LineCurve3(new THREE.Vector3(0, 0, 0), new THREE.Vector3(sphere._native.position._x, sphere._native.position._y, sphere._native.position._z))
+                },
+                softbody: false
+            });
+          line.addTo(world);
+
+    } else {
+
+      line = new WHS.Line({
+                geometry: {
+                    curve: new THREE.LineCurve3(new THREE.Vector3(previousPosition[0], previousPosition[1], previousPosition[2]), new THREE.Vector3(sphere._native.position._x, sphere._native.position._y, sphere._native.position._z))
+                },
+                softbody: false
+            });
+          line.addTo(world);
+
+    }
+
+    previousPosition = [sphere._native.position._x, sphere._native.position._y, sphere._native.position._z]
+
+}
+
+
+previousDirection = []
+
+document.addEventListener('keydown', keyDownHandler);
+function keyDownHandler(event){
+
+  if(event.keyCode == 39) {
+
+        console.log('right');
+        console.log(sphere._native._physijs.linearVelocity);
+        console.log('sphere', sphere._native.position);
+
+        // line.geometry.attributes.position.array.push(20)
+        // line.geometry.attributes.position.array.push(10)
+        // line.geometry.attributes.position.array.push(0)
+
+        if(sphere._native._physijs.linearVelocity.z > 0){
+          sphere.setLinearVelocity({x: -10, y: 0, z: 0});
+
+          //   line = new WHS.Line({
+          //       geometry: {
+          //           curve: new THREE.LineCurve3(new THREE.Vector3(previousPosition[0], previousPosition[1], previousPosition[2]), new THREE.Vector3(sphere._native.position._x, sphere._native.position._y, sphere._native.position._z))
+          //       },
+          //       softbody: true
+          //   });
+          // line.addTo(world);
+
+        }
+
+        if(sphere._native._physijs.linearVelocity.z < 0){
+          sphere.setLinearVelocity({x: 10, y: 0, z: 0});
+        }
+
+        if(sphere._native._physijs.linearVelocity.x > 0){
+          sphere.setLinearVelocity({x: 0, y: 0, z: 10});
+        }
+
+        if(sphere._native._physijs.linearVelocity.x < 0){
+          sphere.setLinearVelocity({x: 0, y: 0, z: -10});
+        }
+
+        // console.log(sphere._native._physijs.linearVelocity);
+        // sphere.setLinearVelocity({x: 10, y: 0, z: 0});
+    }
+    else if(event.keyCode == 37) {
+      console.log('left');
+
+        console.log(sphere._native._physijs.linearVelocity)
+
+        if(sphere._native._physijs.linearVelocity.z > 0){
+          sphere.setLinearVelocity({x: 10, y: 0, z: 0});
+        }
+
+        if(sphere._native._physijs.linearVelocity.z < 0){
+          sphere.setLinearVelocity({x: -10, y: 0, z: 0});
+        }
+
+        if(sphere._native._physijs.linearVelocity.x > 0){
+          sphere.setLinearVelocity({x: 0, y: 0, z: -10});
+        }
+
+        if(sphere._native._physijs.linearVelocity.x < 0){
+          sphere.setLinearVelocity({x: 0, y: 0, z: 10});
+        }
+
+      // console.log(sphere._native._physijs.linearVelocity);
+      //  sphere.setLinearVelocity({x: -10, y: 0, z: 0});
+    }
+    if(event.keyCode == 40) {
+      console.log('down');
+      console.log(sphere._native._physijs.linearVelocity);
+      previousDirection = sphere._native._physijs.linearVelocity
+      sphere.setLinearVelocity({x: 0, y: -10, z: 0});
+    }
+    // else if(event.keyCode == 38) {
+    //   console.log('up');
+    //   console.log(sphere._native._physijs.linearVelocity);
+    //   previousDirection = sphere._native._physijs.linearVelocity
+    //   sphere.setLinearVelocity({x: 0, y: 10, z: 0});
+    // }
+
+}
+
+
+plane.addTo(world);
+sphere.native.addEventListener('collision', (event) => {
+  console.log("COLLISION YO");
+ world.scene.remove(sphere.native)
+})
 
 world.start(); // Start animations and physics simulation.
-world.setControls(new WHS.FirstPersonControls(sphere, {
-  block: document.getElementById('blocker'),
-  speed: 20,
-  ypos: -10
-}));
+// world.setControls(new WHS.OrbitControls());
+// world.setControls(new WHS.FirstPersonControls(sphere, {
+//   block: document.getElementById('blocker'),
+//   speed: 3,
+//   ypos: -10
+// }));
+
