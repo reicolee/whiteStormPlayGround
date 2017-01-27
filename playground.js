@@ -106,8 +106,191 @@ sphere.addTo(world)
 // });
 
 let line;
+let box;
+// this is with the box
+function timerCall() {
+
+    if (!previousPosition) {
+        box = new WHS.Box({
+                    geometry: {
+                        height: 6,
+                        width: 1,
+                        depth: 1
+                    },
+
+                    mass: 0,
+
+                    material: {
+                        color: 0xFFDADA,
+                        kind: 'phong',
+                        rest: 0
+                    },
+
+                    position: {
+                        x: 0,
+                        y: 5,
+                        z: -4
+                    }
+                })
+          box.addTo(world);
+
+    } else {
+      if(sphere._native._physijs.linearVelocity.z > 0){
+       box = new WHS.Box({
+                    geometry: {
+                        height: 6,
+                        width: 1,
+                        depth: 1
+                    },
+
+                    mass: 0,
+
+                    material: {
+                        color: 0xFFDADA,
+                        kind: 'phong',
+                        rest: 0
+                    },
+
+                    position: {
+                        x: sphere._native.position._x,
+                        y: sphere._native.position._y,
+                        z: sphere._native.position._z - 4
+                    }
+                })
+          box.addTo(world);
+        }
+        if(sphere._native._physijs.linearVelocity.z < 0){
+           box = new WHS.Box({
+                    geometry: {
+                        height: 6,
+                        width: 1,
+                        depth: 1
+                    },
+
+                    mass: 0,
+
+                    material: {
+                        color: 0xFFDADA,
+                        kind: 'phong',
+                        rest: 0
+                    },
+
+                    position: {
+                        x: sphere._native.position._x,
+                        y: sphere._native.position._y,
+                        z: sphere._native.position._z + 4
+                    }
+                })
+          box.addTo(world);
+        }
+        if(sphere._native._physijs.linearVelocity.x > 0) {
+          box = new WHS.Box({
+                    geometry: {
+                        height: 6,
+                        width: 1,
+                        depth: 1
+                    },
+
+                    mass: 0,
+
+                    material: {
+                        color: 0xFFDADA,
+                        kind: 'phong',
+                        rest: 0
+                    },
+
+                    position: {
+                        x: sphere._native.position._x - 4,
+                        y: sphere._native.position._y,
+                        z: sphere._native.position._z
+                    }
+                })
+          box.addTo(world);
+        }
+        if(sphere._native._physijs.linearVelocity.x < 0) {
+          box = new WHS.Box({
+                    geometry: {
+                        height: 6,
+                        width: 1,
+                        depth: 1
+                    },
+
+                    mass: 0,
+
+                    material: {
+                        color: 0xFFDADA,
+                        kind: 'phong',
+                        rest: 0
+                    },
+
+                    position: {
+                        x: sphere._native.position._x + 4,
+                        y: sphere._native.position._y,
+                        z: sphere._native.position._z
+                    }
+                })
+          box.addTo(world);
+        }
+        if(sphere._native._physijs.linearVelocity.y > 0) {
+          box = new WHS.Box({
+                    geometry: {
+                        height: 6,
+                        width: 1,
+                        depth: 1
+                    },
+
+                    mass: 0,
+
+                    material: {
+                        color: 0xFFDADA,
+                        kind: 'phong',
+                        rest: 0
+                    },
+
+                    position: {
+                        x: sphere._native.position._x,
+                        y: sphere._native.position._y - 4,
+                        z: sphere._native.position._z
+                    }
+                })
+          box.addTo(world);
+        }
+        if(sphere._native._physijs.linearVelocity.y < 0) {
+          box = new WHS.Box({
+                    geometry: {
+                        height: 6,
+                        width: 1,
+                        depth: 1
+                    },
+
+                    mass: 0,
+
+                    material: {
+                        color: 0xFFDADA,
+                        kind: 'phong',
+                        rest: 0
+                    },
+
+                    position: {
+                        x: sphere._native.position._x,
+                        y: sphere._native.position._y + 4,
+                        z: sphere._native.position._z
+                    }
+                })
+          box.addTo(world);
+        }
+
+
+    }
+
+    previousPosition = [sphere._native.position._x, sphere._native.position._y, sphere._native.position._z]
+}
+
+
+
 let previousPosition;
-setInterval(timerCall, 300)
+setInterval(timerCall, 50)
+const group = new WHS.Group();
 
 // var geometry = new THREE.Geometry();
 // var material = new THREE.LineBasicMaterial({color: 0x0000ff});
@@ -132,33 +315,42 @@ setInterval(timerCall, 300)
 //   previousPosition = [sphere._native.position._x, sphere._native.position._y, sphere._native.position._z];
 // }
 
-function timerCall() {
+// this is with the LINE
+// function timerCall() {
 
-    if (!previousPosition) {
+//     if (!previousPosition) {
 
-      line = new WHS.Line({
-                geometry: {
-                    curve: new THREE.LineCurve3(new THREE.Vector3(0, 0, 0), new THREE.Vector3(sphere._native.position._x, sphere._native.position._y, sphere._native.position._z))
-                },
-                softbody: false
-            });
-          line.addTo(world);
+//       // line = new WHS.Line({
+//       //           geometry: {
+//       //               curve: new THREE.LineCurve3(new THREE.Vector3(0, 0, 0), new THREE.Vector3(sphere._native.position._x, sphere._native.position._y, sphere._native.position._z))
+//       //           },
+//       //           mass: 10,
+//       //           softbody: false
+//       //       });
+//       //     line.addTo(group);
+//       //     line.addTo(world);
 
-    } else {
 
-      line = new WHS.Line({
-                geometry: {
-                    curve: new THREE.LineCurve3(new THREE.Vector3(previousPosition[0], previousPosition[1], previousPosition[2]), new THREE.Vector3(sphere._native.position._x, sphere._native.position._y, sphere._native.position._z))
-                },
-                softbody: false
-            });
-          line.addTo(world);
 
-    }
 
-    previousPosition = [sphere._native.position._x, sphere._native.position._y, sphere._native.position._z]
+//     } else {
 
-}
+//       // line = new WHS.Line({
+//       //           geometry: {
+//       //               curve: new THREE.LineCurve3(new THREE.Vector3(previousPosition[0], previousPosition[1], previousPosition[2]), new THREE.Vector3(sphere._native.position._x, sphere._native.position._y, sphere._native.position._z))
+//       //           },
+//       //           mass: 10,
+//       //           softbody: false
+//       //       });
+//       //     line.addTo(group);
+//       //     line.addTo(world);
+//       //     console.log("LINE", line);
+//       //     console.log("GROUP", group);
+//     }
+
+//     previousPosition = [sphere._native.position._x, sphere._native.position._y, sphere._native.position._z]
+
+// }
 
 
 previousDirection = []
@@ -168,9 +360,9 @@ function keyDownHandler(event){
 
   if(event.keyCode == 39) {
 
-        console.log('right');
-        console.log(sphere._native._physijs.linearVelocity);
-        console.log('sphere', sphere._native.position);
+        // console.log('right');
+        // console.log(sphere._native._physijs.linearVelocity);
+        // console.log('sphere', sphere._native.position);
 
         // line.geometry.attributes.position.array.push(20)
         // line.geometry.attributes.position.array.push(10)
@@ -247,8 +439,10 @@ function keyDownHandler(event){
 plane.addTo(world);
 sphere.native.addEventListener('collision', (event) => {
   console.log("COLLISION YO");
+  console.log("SPHERE NATIVE", sphere.native);
  world.scene.remove(sphere.native)
 })
+
 
 world.start(); // Start animations and physics simulation.
 // world.setControls(new WHS.OrbitControls());
